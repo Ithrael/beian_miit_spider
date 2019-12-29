@@ -12,6 +12,6 @@
 使用方法：
 `python beian.py "浙江淘宝网络有限公司"`
 
-(https://github.com/Ithrael/beian_miit_spider/1.jpg)
+![Alt text](https://github.com/Ithrael/beian_miit_spider/blob/master/1.png)
 
 有大佬有兴趣可以自己打个pip包，用起来更方便，欢迎提issue
