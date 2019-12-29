@@ -5,7 +5,9 @@
 备案查询是资产收集中很重要的一步，能自动化就美滋滋，这里验证码识别服务搭建在自己的服务器上，大佬们不要hack，
 验证码的识别率达到90%已经，用起来基本没啥问题
 
+验证码训练参考：https://github.com/kerlomz/captcha_trainer
 
+验证码部署参考：https://github.com/kerlomz/captcha_platform
 ### 使用说明
 建议在py3环境下食用
 
