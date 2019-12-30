@@ -133,7 +133,7 @@ class Beian(object):
 
         while 1:
             self.verify_code()
-            if self.vilidCode() and len(self.code) == 6:
+            if len(self.code) == 6 and self.vilidCode():
                 break
             time.sleep(1)
 
@@ -163,7 +163,7 @@ def query(comp):
         beian.verify_code()
         print(beian.code, beian.vilidCode())
 
-        if beian.vilidCode() and len(beian.code) == 6:
+        if len(beian.code) == 6 and beian.vilidCode():
             break
         time.sleep(1)
 
@@ -176,7 +176,8 @@ if __name__ == '__main__':
     comp = sys.argv[1]
     print(comp)
     websites = query(comp)
-    print(websites)
+    for website in websites:
+        print(website)
 
 
 
