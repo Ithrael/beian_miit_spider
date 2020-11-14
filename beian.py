@@ -86,7 +86,7 @@ def query_file(comp_f_path):
 
 def init_command_args():
     """
-    初始化训练运行参数
+    初始化运行参数
     """
     flags.DEFINE_string('comp', DEFAULT_COMP, 'query comp name, default: {}'.format(DEFAULT_COMP))
     flags.DEFINE_string('mode', 'comp', 'query mode: comp or file, default: comp')
@@ -97,11 +97,11 @@ def main(_):
     if FLAGS.mode == 'comp':
         comp = FLAGS.comp
         res = query(comp)
-        print(res)
+        print("\n".join(res))
     elif FLAGS.mode == 'file':
         comp_f_path = FLAGS.comp_f_path
         res = query_file(comp_f_path)
-        print(res)
+        print("\n".join(res))
 
 
 if __name__ == '__main__':

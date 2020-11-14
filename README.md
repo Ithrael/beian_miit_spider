@@ -13,9 +13,6 @@
 
 `pip install -r requirements.txt`
 
-使用方法：
-`python beian.py "浙江淘宝网络有限公司"`
-
 ![image](images/1.png)
 
 有大佬有兴趣可以自己打个pip包，用起来更方便，欢迎提issue
