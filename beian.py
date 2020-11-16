@@ -8,6 +8,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 FLAGS = flags.FLAGS
 DEFAULT_COMP = "中国铁路上海局集团有限公司"
+DEFAULT_OUT = "domains.txt"
 
 
 class Beian(object):
@@ -70,6 +71,7 @@ class Beian(object):
 def query(comp):
     beian = Beian(comp)
     beian.query_host_by_comp()
+    print("\n".join(beian.domains))
     return beian.domains
 
 
@@ -80,7 +82,10 @@ def query_file(comp_f_path):
     for comp in open(comp_f_path, 'r', encoding='utf-8').readlines():
         beian = Beian(comp.strip())
         beian.query_host_by_comp()
-        domains.extend(beian.domains)
+        domains = beian.domains
+        print(comp)
+        print("\n".join(domains))
+        domains.extend(domains)
     return domains
 
 
@@ -91,17 +96,22 @@ def init_command_args():
     flags.DEFINE_string('comp', DEFAULT_COMP, 'query comp name, default: {}'.format(DEFAULT_COMP))
     flags.DEFINE_string('mode', 'comp', 'query mode: comp or file, default: comp')
     flags.DEFINE_string('comp_f_path', '', 'query comp file path, default: None')
+    flags.DEFINE_string('out', DEFAULT_OUT, 'output file, default: {}'.format(DEFAULT_OUT))
 
 
 def main(_):
+    res = []
+    out = FLAGS.out
     if FLAGS.mode == 'comp':
         comp = FLAGS.comp
         res = query(comp)
-        print("\n".join(res))
     elif FLAGS.mode == 'file':
         comp_f_path = FLAGS.comp_f_path
         res = query_file(comp_f_path)
-        print("\n".join(res))
+
+    with open(out, 'w', encoding='utf-8') as writer:
+        writer.write("\n".join(res))
+    print("over!")
 
 
 if __name__ == '__main__':
