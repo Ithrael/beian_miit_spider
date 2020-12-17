@@ -25,7 +25,11 @@
 ![image](images/3.png)
 #### 使用方式
 ```python
+python3 beian.py --help
+
 python3 beian.py --comp=中国铁路上海局集团有限公司
 or
 python3 beian.py --mode=file --comp_f_path=test.txt
+
+python3 beian.py --mode=host --host=16816888.com
 ```
