@@ -67,6 +67,28 @@ class Beian(object):
                 domain = item["domain"]
                 self.domains.append(domain)
 
+    def query_comp_by_host(self):
+        param = "keyword={}&pageIndex=1&pageSize=20".format(self.encode_comp)
+
+        with requests.post(self.url, data=param, headers=self.header, proxies=self.proxies, timeout=self.timeout,
+                           verify=False) as r:
+            if r.status_code != 200:
+                return
+            res_json = r.json()
+            content = res_json["result"]["content"]
+            if not content:
+                return
+            for item in content:
+                serviceName = item["serviceName"]
+                self.domains.append(serviceName)
+
+
+def query_host(host):
+    beian = Beian(host)
+    beian.query_comp_by_host()
+    print("\n".join(beian.domains))
+    return beian.domains
+
 
 def query(comp):
     beian = Beian(comp)
@@ -94,9 +116,10 @@ def init_command_args():
     初始化运行参数
     """
     flags.DEFINE_string('comp', DEFAULT_COMP, 'query comp name, default: {}'.format(DEFAULT_COMP))
-    flags.DEFINE_string('mode', 'comp', 'query mode: comp or file, default: comp')
+    flags.DEFINE_string('mode', 'comp', 'query mode: comp or file or host, default: comp')
     flags.DEFINE_string('comp_f_path', '', 'query comp file path, default: None')
     flags.DEFINE_string('out', DEFAULT_OUT, 'output file, default: {}'.format(DEFAULT_OUT))
+    flags.DEFINE_string('host', '', 'query host, default: None')
 
 
 def main(_):
@@ -108,6 +131,9 @@ def main(_):
     elif FLAGS.mode == 'file':
         comp_f_path = FLAGS.comp_f_path
         res = query_file(comp_f_path)
+    elif FLAGS.mode == 'host':
+        host = FLAGS.host
+        res = query_host(host)
 
     with open(out, 'w', encoding='utf-8') as writer:
         writer.write("\n".join(res))
