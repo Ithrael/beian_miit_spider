@@ -3,14 +3,17 @@ import os
 import urllib3
 from urllib import parse
 import requests
-from absl import app, flags
+import argparse
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-FLAGS = flags.FLAGS
-DEFAULT_COMP = "中国铁路上海局集团有限公司"
+DESCRIPTION='''
+beian_miit_spider 
+Query domain name [put on record] script.
+'''
 DEFAULT_OUT = "domains.txt"
-
+DEFAULT_MODE="f"
+argv:None
 
 class Beian(object):
     timeout = 30
@@ -29,7 +32,7 @@ class Beian(object):
         "Connection": "keep-alive"
     }
 
-    def __init__(self, comp, proxy=None):
+    def __init__(self, comp, proxy={'http': 'http://localhost:8080'}):
         self.comp = comp
         self.proxies = proxy
         self.encode_comp = parse.quote(comp, encoding='utf-8')
@@ -116,25 +119,29 @@ def init_command_args():
     """
     初始化运行参数
     """
-    flags.DEFINE_string('comp', DEFAULT_COMP, 'query comp name, default: {}'.format(DEFAULT_COMP))
-    flags.DEFINE_string('mode', 'comp', 'query mode: comp or file or host, default: comp')
-    flags.DEFINE_string('comp_f_path', '', 'query comp file path, default: None')
-    flags.DEFINE_string('out', DEFAULT_OUT, 'output file, default: {}'.format(DEFAULT_OUT))
-    flags.DEFINE_string('host', '', 'query host, default: None')
+    #换了一个参数接收方式
+    parser=argparse.ArgumentParser(description=DESCRIPTION)
+    parser.add_argument("--comp",type=str,help="query comp name")
+    parser.add_argument("-mode",type=str,choices=['c','f','h'],default=DEFAULT_MODE,help="query mode: c for comp, f for file, h for host, default: {}".format(DEFAULT_MODE))
+    parser.add_argument("--file",type=str,help="query comp file path")
+    parser.add_argument("--host",type=str,help="query host")
+    parser.add_argument("--out",type=str,default=DEFAULT_OUT,help="output file, default:{}".format(DEFAULT_OUT))
+    global argv
+    argv=parser.parse_args()
 
-
-def main(_):
+def main():
     res = []
-    out = FLAGS.out
-    if FLAGS.mode == 'comp':
-        comp = FLAGS.comp
-        res = query(comp)
-    elif FLAGS.mode == 'file':
-        comp_f_path = FLAGS.comp_f_path
-        res = query_file(comp_f_path)
-    elif FLAGS.mode == 'host':
-        host = FLAGS.host
-        res = query_host(host)
+    mode = argv.mode
+    out=argv.out
+    if mode == 'c' and argv.comp:
+        res = query(argv.comp)
+    elif mode == 'f' and argv.file:
+        res = query_file(argv.file)
+    elif mode == 'h' and argv.host:
+        res = query_host(argv.host)
+    else:
+        print("Required parameters are not available, the script exits.")
+        exit(0)
 
     with open(out, 'w', encoding='utf-8') as writer:
         writer.write("\n".join(res))
@@ -143,4 +150,4 @@ def main(_):
 
 if __name__ == '__main__':
     init_command_args()
-    app.run(main)
+    main()
