@@ -1,4 +1,4 @@
-requests==2.22.0
+requests==2.31.0
 bs4==0.0.1
 lxml==4.6.3
 absl-py
